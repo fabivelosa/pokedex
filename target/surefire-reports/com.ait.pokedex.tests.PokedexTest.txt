@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.ait.pokedex.tests.PokedexTest
+-------------------------------------------------------------------------------
+Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.732 sec - in com.ait.pokedex.tests.PokedexTest

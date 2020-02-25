@@ -14,8 +14,9 @@ public class ConnectionHelper
     	String driver = null;
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-		// docker	url = "jdbc:mysql://127.0.0.1:3307/Pokedex?user=root&password=admin123";
-			url = "jdbc:mysql://127.0.0.1:3306/Pokedex?user=root&password=admin123";
+		 //docker	
+		 url = "jdbc:mysql://127.0.0.1:3307/Pokedex?useSSL=false&allowPublicKeyRetrieval=true&user=root&password=admin123";
+		//	url = "jdbc:mysql://127.0.0.1:3306/Pokedex?user=root&password=admin123";
             driver="com.mysql.cj.jdbc.Driver";
             Class.forName(driver);
 		} catch (Exception e) {

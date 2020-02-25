@@ -13,7 +13,7 @@ public class PokedexDAO {
 	public List<Pokedex> findAll() {
 		List<Pokedex> list = new ArrayList<Pokedex>();
 		Connection c = null;
-		String sql = "SELECT * FROM pokemon ORDER BY name";
+		String sql = "SELECT * FROM Pokedex.Pokemon ORDER BY name";
 		try {
 			c = ConnectionHelper.getConnection();
 			Statement s = c.createStatement();
@@ -29,9 +29,9 @@ public class PokedexDAO {
 		}
 		return list;
 	}
-
+	
 	public Pokedex findById(int id) {
-		String sql = "SELECT * FROM pokemon where id = ?";
+		String sql = "SELECT * FROM Pokedex.Pokemon where id = ?";
 		Pokedex poke = null;
 		Connection c = null;
 		try {
@@ -54,7 +54,7 @@ public class PokedexDAO {
 	public List<Pokedex> findByName(String name) {
 		List<Pokedex> list = new ArrayList<Pokedex>();
 		Connection c = null;
-		String sql = "SELECT * FROM pokemon where Upper(name) like ? " + "order by name";
+		String sql = "SELECT * FROM Pokedex.Pokemon where Upper(name) like ? " + "order by name";
 		try {
 			c = ConnectionHelper.getConnection();
 			PreparedStatement ps = c.prepareStatement(sql);
@@ -114,29 +114,30 @@ public class PokedexDAO {
 		String sql = null;
 		try {
 			c = ConnectionHelper.getConnection();
-			sql = "INSERT INTO Pokedex.Pokemon (name, attack, category, gender, region, evolution, photo, description) "
-					+ "VALUES (?,?,?,?,?,?,?,?);";
+			sql = "INSERT INTO Pokedex.Pokemon (id,name, attack, category, gender, region, evolution, photo, description) "
+					+ "VALUES (?,?,?,?,?,?,?,?,?);";
 			PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			ps.setString(1, poke.getName());
-			ps.setString(2, poke.getAttack());
-			ps.setString(3, poke.getCategory());
-			ps.setString(4, poke.getGender());
-			ps.setString(5, poke.getRegion());
-			ps.setString(6, poke.getEvolution());
-			ps.setString(7, poke.getPhoto());
-			ps.setString(8, poke.getDescription());
+			ps.setInt(1, poke.getId());
+			ps.setString(2, poke.getName());
+			ps.setString(3, poke.getAttack());
+			ps.setString(4, poke.getCategory());
+			ps.setString(5, poke.getGender());
+			ps.setString(6, poke.getRegion());
+			ps.setString(7, poke.getEvolution());
+			ps.setString(8, poke.getPhoto());
+			ps.setString(9, poke.getDescription());
 			ps.executeUpdate();
-			ResultSet rs = ps.getGeneratedKeys();
-			rs.next();
-			int id = rs.getInt(1);
-			poke.setId(id);
+//			ResultSet rs = ps.getGeneratedKeys();
+//			rs.next();
+//			int id = rs.getInt(1);
+//			poke.setId(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		} finally {
 			ConnectionHelper.close(c);
 		}
-		System.out.println(sql + "id= " + poke.getId());
+		//System.out.println(sql + "id= " + poke.getId());
 		return poke;
 	}
 
