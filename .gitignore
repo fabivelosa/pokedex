@@ -23,5 +23,7 @@
 hs_err_pid*
 
 /target/
-*.idea/
-*.DS_Store
+.classpath
+build/
+.idea/
+.DS_Store
