@@ -1,5 +1,6 @@
 package com.ait.pokedex;
 
+import java.security.InvalidParameterException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -60,7 +61,7 @@ public class PokedexDAO {
 			PreparedStatement ps = c.prepareStatement(sql);
 			ps.setString(1, "%" + name.toUpperCase() + "%");
 			ResultSet rs = ps.executeQuery();
-			while (rs.next()) {
+			while (rs.next()) { 
 				list.add(processRow(rs));
 			}
 		} catch (SQLException e) {

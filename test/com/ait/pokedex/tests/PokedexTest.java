@@ -1,6 +1,8 @@
 package com.ait.pokedex.tests;
 
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.sql.Connection;
@@ -18,7 +20,7 @@ import com.ait.pokedex.PokedexDAO;
 
 public class PokedexTest {
 
-	public Pokedex poke;
+	public Pokedex pokedex;
 	public PokedexDAO dao;
 	List<Pokedex> list = new ArrayList<Pokedex>();
 	public ConnectionHelper con;
@@ -31,21 +33,17 @@ public class PokedexTest {
 
 	}
 
-	@AfterEach
-	public void finalize() throws SQLException {
-		c.close();
-	}
-
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@AfterEach
 	public void tearDown() throws Exception {
+		c.close();
 	}
 
 	@Test
-	void testInsert() {
-		Pokedex pokedex = new Pokedex();
+	void testCreate() {
+		pokedex = new Pokedex();
 		pokedex.setId(14);
 		pokedex.setName("Rattata");
 		pokedex.setCategory("Grass");
@@ -53,18 +51,18 @@ public class PokedexTest {
 		pokedex.setRegion("Kanto");
 		pokedex.setDescription("Rattata is cautious in the extreme. Even while it is asleep, "
 				+ "it constantly listens by moving its ears around.");
-		poke = dao.create(pokedex);
+		pokedex = dao.create(pokedex);
 	}
 
 	@Test
-	public void testAddDuplicated() {
-		Pokedex pokedex = new Pokedex();
+	public void testCreateDuplicated() {
+		pokedex = new Pokedex();
 		pokedex.setId(14);
 		pokedex.setName("Rattata");
 		pokedex.setCategory("Grass");
-		pokedex.setRegion("Kanto");
 		pokedex.setAttack("Run Away");
-	//	poke = dao.create(pokedex);
+		pokedex.setRegion("Kanto");
+		// pokedex = dao.create(pokedex);
 	}
 
 	@Test
@@ -75,22 +73,22 @@ public class PokedexTest {
 
 	@Test
 	void testUpdate() {
-		Pokedex pokedex = new Pokedex();
+		pokedex = new Pokedex();
 		pokedex.setId(14);
 		pokedex.setName("Rattata");
 		pokedex.setCategory("Grass");
 		pokedex.setAttack("Run Away");
 		pokedex.setDescription("Rattata is cautious in the extreme. Even while it is asleep, "
 				+ "it constantly listens by moving its ears around.");
-		poke = dao.update(pokedex);
+		pokedex = dao.update(pokedex);
 	}
 
 	@Test
 	void testFindbyId() {
-		poke = dao.findById(1);
-		assertEquals("Bulbasaur", poke.getName());
-		assertEquals("Grass", poke.getCategory());
-		assertEquals("Male", poke.getGender());
+		pokedex = dao.findById(1);
+		assertEquals("Bulbasaur", pokedex.getName());
+		assertEquals("Grass", pokedex.getCategory());
+		assertEquals("Male", pokedex.getGender());
 	}
 
 	@Test
@@ -117,13 +115,13 @@ public class PokedexTest {
 	@Test
 	void testFindAll() {
 		list = dao.findAll();
-		assertEquals(10, list.size());
+		assertFalse(list.isEmpty());
 	}
 
 	@Test
 	void testFindByRegionAndCategory() {
 		list = dao.findByRegionAndCategory("Kanto", "Fire");
-		assertEquals(3, list.size());
+		assertFalse(list.isEmpty());
 		assertEquals("Kanto", list.get(0).getRegion());
 		assertEquals("Fire", list.get(1).getCategory());
 		assertEquals("Male", list.get(2).getGender());

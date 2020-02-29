@@ -21,7 +21,7 @@ public class PokedexResource {
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public List<Pokedex> findAll() {
-		System.out.println("findAll");
+		System.out.println("findAll"); 
 		return dao.findAll();
 	}
 
