@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Pokedex da Fabi!</title>
+
+<link rel="stylesheet" href="css/styles.css" />
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script src="js/main.js"></script>
+
+</head>
+<body>
+
+	<h2>Welcome to the Pokedex Application</h2>
+
+	<div class="header">
+		<input type="text" id="searchKey" />
+		<button id="btnSearch">Search</button>
+		<button id="btnAdd">New Buddy</button>
+	</div>
+	<div class="leftArea">
+		<ul id="pokeList"></ul>
+	</div>
+
+	<div class="mainArea">
+
+		<label>Id:</label> <input id="Id" name="id" type="text" /> <label>Name:</label>
+		<input type="text" id="name" name="name" /> <label>Region:</label> <input
+			type="text" id="region" name="region" /> <label>Category:</label> <input
+			type="text" id="category" name="category" /> <label>Evolution:</label>
+		<input type="text" id="evolution" name="evolution" /> <label>Gender:</label>
+		<input type="text" id="gender" name="gender" />
+
+
+	<button id="btnSave">Save</button>
+	<button id="btnDelete">Delete</button>
+</div>
+	
+	<div class="rightArea">
+		<img id="img" height="300" width="300"/> <label>Notes:</label>
+		<textarea id="description" name="description"></textarea>
+	</div>
+</body>
+</html>
