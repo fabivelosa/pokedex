@@ -5,14 +5,12 @@ USE Pokedex;
 
 /*Table structure for table login */
 DROP TABLE IF EXISTS Login;
-CREATE TABLE IF NOT EXISTS Login (
-    firstName VARCHAR(30) NOT NULL,
-    emailAddress VARCHAR(30) NOT NULL,
-    functionType VARCHAR(10) NOT NULL,
-	accessType INTEGER,
-    password VARCHAR(10),
-    PRIMARY KEY (emailAddress)
-);
+CREATE TABLE IF NOT EXISTS `Pokedex`.`Login` (
+  id INT AUTO_INCREMENT NOT NULL,
+  username VARCHAR(20) NOT NULL,
+  password VARCHAR(20) NOT NULL,
+  role ENUM('ADMIN','CUSTOMER') NOT NULL DEFAULT 'CUSTOMER',
+  PRIMARY KEY (id));
 	
 DROP TABLE IF EXISTS Pokemon;
 CREATE TABLE IF NOT EXISTS Pokemon (

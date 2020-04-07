@@ -1,6 +1,5 @@
 package com.ait.pokedex;
 
-import java.security.InvalidParameterException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -105,7 +104,7 @@ public class PokedexDAO {
 		poke.setGender(rs.getString("gender"));
 		poke.setRegion(rs.getString("region"));
 		poke.setEvolution(rs.getString("evolution"));
-		poke.setPhoto(rs.getString("photo"));
+		poke.setImg(rs.getString("photo"));
 		poke.setDescription(rs.getString("description"));
 		return poke;
 	}
@@ -125,7 +124,7 @@ public class PokedexDAO {
 			ps.setString(5, poke.getGender());
 			ps.setString(6, poke.getRegion());
 			ps.setString(7, poke.getEvolution());
-			ps.setString(8, poke.getPhoto());
+			ps.setString(8, poke.getImg());
 			ps.setString(9, poke.getDescription());
 			ps.executeUpdate();
 //			ResultSet rs = ps.getGeneratedKeys();
@@ -154,7 +153,7 @@ public class PokedexDAO {
 			ps.setString(3, poke.getCategory());
 			ps.setString(4, poke.getEvolution());
 			ps.setString(5, poke.getRegion());
-			ps.setString(6, poke.getPhoto());
+			ps.setString(6, poke.getImg());
 			ps.setString(7, poke.getGender());
 			ps.setString(8, poke.getDescription());
 			ps.setInt(9, poke.getId());

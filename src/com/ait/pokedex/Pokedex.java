@@ -13,7 +13,7 @@ public class Pokedex {
 	private String region;
 	private String evolution;
 	private String description;
-	private String photo;
+	private String img;
 
 	/**
 	 * @return the id
@@ -149,15 +149,15 @@ public class Pokedex {
 	/**
 	 * @return the photo
 	 */
-	public String getPhoto() {
-		return photo;
+	public String getImg() {
+		return img;
 	}
 
 	/**
 	 * @param photo the photo to set
 	 */
-	public void setPhoto(String photo) {
-		this.photo = photo;
+	public void setImg(String photo) {
+		this.img = photo;
 	}
 
 	public Pokedex() {
