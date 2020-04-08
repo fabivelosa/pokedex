@@ -8,36 +8,181 @@ var dataJson;
 var user = "";
 var ADMIN ="admin";
 var CUSTOMER = "customer";
-var pt = null;
-var loginVar = localStorage.getItem('loginVar');
+var pt = $('#pokemon-item');
+var loginVar =0;
 
 
 $(function() {
-//	initLogin();
-	findAll(0);
+	initLogin();
 	initTabs();
-	initUpdatePokemon();
-	initDataGrid()
-	pt = $('#pokemon-item');
+	pt = $('#pokemon-item'); 
+	
+	
 });
 
+function initLogin() {
+	
+	function logout() {
+		clearUsernameAndPasswordField();
+		loginVar = 0;
+		localStorage.setItem('loginVar', 0);
+		window.location.reload(true);// force reload from server instead of cache
+		return false; 
+	}
+	
+	function login() {
+		var usernameToCheck = $('#username').val();
+		var passwordToCheck = $('#password').val();
+		if (!usernameToCheck || !passwordToCheck) {
+			$('#loginError').show();
+		} else {
+			user = findByUsername(usernameToCheck);
+			if (user != null) {
+				console.log('user' + user);
+				var correctPassword = user.password;
+
+				if (passwordToCheck == correctPassword) {
+					userTypeLogin(user.role);
+				} else {
+					$('#password').val('');
+					$('#loginError').show();
+					$('#btnLogout').hide();
+					$('#btnLogoutCust').hide();
+				}
+			} else {
+				console.log("user error");
+				clearUsernameAndPasswordField();
+				$('#loginError').show();
+				$('#btnLogout').hide();
+				$('#btnLogoutCust').hide();
+			}
+		}
+		return false;
+	}
+	
+	var findByUsername = function(username) {
+		var userData;
+		console.log('findByUsername: ' + username);
+		$.ajax({
+			type : 'GET',
+			url : rootURL + '/login/search/' + username + '/',
+
+			dataType : "json",
+			async : false,
+			success : function(data) {
+				if(loginVar == 1){
+					$('#btnLogout').show();
+				}else{
+					$('#btnLogoutCust').show();
+				}
+				userData = data
+			},
+			error : function(XMLHttpRequest, textStatus, errorThrown) {
+				console.log("User doesnt exist!")
+			}
+		});
+		return userData;
+	};
+
+	function clearUsernameAndPasswordField() {
+		$('#username').val('');
+		$('#password').val('');
+	}
+	
+	function userTypeLogin(userRole) {
+		console.log("userTypeLogin " + userRole)
+		
+		if (userRole == "ADMIN") {
+			console.log("admin")
+			user = "ADMIN"
+			loginVar = 1;	
+			//window.location.reload();// the same as the reload button on
+		
+		} else {
+			console.log("customer")
+			user = "CUSTOMER";
+			loginVar = 2;
+			//window.location.reload();// the same as the reload button on
+		}
+	}
+	
+	$('#btnGo').click(function() {
+		login();
+		return false;
+	});
+
+	$('#btnLogout').click(function() {
+		logout();
+		$('#btnLogout').hide();
+		return false; // this cancels the default action of the browser
+	});
+	
+	$('#btnLogoutCust').click(function() {
+		logout();
+		$('#btnLogoutCust').hide();
+		return false; // this cancels the default action of the browser
+	});
+
+}
+
 function initTabs(){
+
+	$("#tabs").tabs({
+		beforeActivate : function(event, ui) {
+			
+				if (ui.newTab.index() == 1) {
+					
+					if(loginVar == 0){ 
+						  alert(' Not Logged');  
+						  return false;
+					}
+					
+					if(loginVar == 1){ 
+						  alert(' Access Denied');  
+						  return false;
+					}
+					         
+				} else if (ui.newTab.index() == 2) {
+					
+					if(loginVar == 0){ 
+						  alert(' Not Logged');  
+						  return false;
+					}
+					
+					if(loginVar == 2){ 
+						  alert(' Access Denied'); 
+						  return false;
+					}
+				}else{
+					if(loginVar > 0 ){
+						  alert(' Already Logged');  
+						  return false;
+					}
+				}
+				
+		}
+	});
+	
+	
+	
 	$("#tabs").tabs({
 		activate : function(event, ui) {
 			console.log('tab: '+ ui.newTab.index());
 				if (ui.newTab.index() == 1) {
 					if ($('.row .col-lg-3').length <= 1) {
-						renderGrid(dataJson);
-					}
+				   		 findAll(0);
+				 		 initDataGrid();
+					} 
+				            
 				} else {
-					renderDataTable(dataJson);
-					if (!$('#table_id-1').DataTable().data().any()) {
-						console.log("table_id-1");
-					}
+						findAll(2);
+						initUpdatePokemon();
 				}
+				
 		}
-	});	
+	});
 }
+
 
 function initDataGrid(){
 	// Register listeners
@@ -77,43 +222,6 @@ function initDataGrid(){
 	};
 }
 
-function initLogin(){
-
-	function login(){
-		var usernameToCheck=$('#username').val();
-		var passwordToCheck=$('#password').val();
-		if (!usernameToCheck || !passwordToCheck){
-			$('#loginError').show();	
-		}else{
-			user = findByUsername(usernameToCheck);			
-			if(user != null){
-				console.log('user'+user);
-				var correctUsername = user.username;
-				var correctPassword = user.password;
-				
-				console.log('correctUsername'+correctUsername);
-				console.log('correctPassword'+correctPassword);
-				console.log('passwordToCheck'+passwordToCheck);
-
-				
-				if(passwordToCheck == correctPassword){
-					userTypeLogin(user.role);
-				}else{
-					$('#password').val('');
-					$('#loginError').slideDown().html('<span id="error">Invalid Password</span>');	
-					$('#btnLogout').hide();
-				}
-
-			}else{
-				console.log("user error");
-				clearUsernameAndPasswordField();
-				$('#loginError').show();
-				$('#btnLogout').hide();
-			}
-		}
-		return false;
-	}	
-
 
 var  findByUsername= function(username) {
 	var userData;
@@ -141,37 +249,6 @@ function clearUsernameAndPasswordField(){
 		$('#password').val('');
 }
 
-function userTypeLogin(userRole){
-	console.log("userTypeLogin "+userRole)
-	if (userRole=="admin"){
-		user="admin"
-		loginVar = 1;
-		localStorage.setItem('loginVar', 1);
-		console.log("admin")
-		 window.location.reload();
-	}else if (userRole=="customer"){
-		user="customer";
-		loginVar = 2;
-		localStorage.setItem('loginVar', 2);
-		window.location.reload();
-	}
-}	
-
-if (loginVar == 1){//admin
-	$('#tabs-0').hide();
-	$('#tabs-2').show();
-	$('#tabs-1').hide();
-
-}else if (loginVar == 2 ){//user
-	$('#tabs-0').hide();
-	$('#tabs-2').hide();
-	$('#tabs-1').show();
-}
-else {
-	$('#btnLogin').show();
-	$('#users').hide();
-	$('#btnLogout').hide();
-}
 
 $('#btnGo').click(function () {
 	login();
@@ -185,7 +262,7 @@ $('#btnLogout').click(function () {
 	return false;	// this cancels the default action of the browser
 });
 
-}
+
 
 function findAll(id) {
 	$.ajax({

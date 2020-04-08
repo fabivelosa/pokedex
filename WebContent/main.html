@@ -35,7 +35,6 @@
     <!--includes the local css and script files-->
     <script src="js/main.js"></script>
 
-
 </head>
 <body>
 
@@ -43,9 +42,9 @@
 <div class="container">
 	<img src="img/initpage.jpg" alt="pokemon" style="width:100%;height:300px;">
 	
-	<div id="tabs">
+	<div id="tabs" class="tabs">
 		<ul>
-			<li><a href="#tabs-0"> <i class="fas fa-home"> </i> Home</a></li>
+			<li><a href="#tabs-0" ><i class="fas fa-home"> </i> Home</a></li>
 			<li><a href="#tabs-1"><i class="fas fa-list-ul"></i> Pokédex</a></li>
 			<li><a href="#tabs-2"><i class="fas fa-user-edit"></i> Admin</a></li> 
 		</ul>
@@ -159,6 +158,9 @@
 						<label class="col-md-4 control-label">Region</label>
 					    <span class="input-group-addon"></span> 
 						<input id="region" name="region" class="form-control" type="text"/>
+						<label class="col-md-4 control-label">Description</label>
+					    <span class="input-group-addon"></span> 
+						<textarea id="description" name="description" class="form-control" type="text"></textarea>
 		  			    <label class="col-md-4 control-label">Picture</label>
 					    <span class="input-group-addon"></span> 
 						<input id="poke-img" name="poke-img" class="form-control" type="text"/>
