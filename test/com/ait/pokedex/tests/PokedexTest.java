@@ -14,7 +14,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.ait.pokedex.ConnectionHelper;
+import com.ait.pokedex.DBConnection;
 import com.ait.pokedex.Pokedex;
 import com.ait.pokedex.PokedexDAO;
 
@@ -23,12 +23,12 @@ public class PokedexTest {
 	public Pokedex pokedex;
 	public PokedexDAO dao;
 	List<Pokedex> list = new ArrayList<Pokedex>();
-	public ConnectionHelper con;
+	public DBConnection con;
 	Connection c = null;
 
 	@BeforeEach
 	public void init() throws ClassNotFoundException, SQLException {
-		c = ConnectionHelper.getConnection();
+		c = DBConnection.getConnection();
 		dao = new PokedexDAO();
 
 	}

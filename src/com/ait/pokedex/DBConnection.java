@@ -4,21 +4,19 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class ConnectionHelper
-{
-	private String url;
-	private static ConnectionHelper instance;
+public class DBConnection {
 
-	private ConnectionHelper()
-	{
-    	String driver = null;
+	private String url;
+	private static DBConnection instance;
+
+	private DBConnection() {
+		String driver = null;
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
-		 //docker	
-		 url = "jdbc:mysql://127.0.0.1:3307/Pokedex?useSSL=false&allowPublicKeyRetrieval=true&user=root&password=admin123";
-		//	url = "jdbc:mysql://127.0.0.1:3306/Pokedex?user=root&password=admin123";
-            driver="com.mysql.cj.jdbc.Driver";
-            Class.forName(driver);
+		//	Docker 
+			url = "jdbc:mysql://127.0.0.1:3307/Pokedex?useSSL=false&allowPublicKeyRetrieval=true&user=root&password=admin123";
+			driver = "com.mysql.cj.jdbc.Driver";
+			Class.forName(driver);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -26,7 +24,7 @@ public class ConnectionHelper
 
 	public static Connection getConnection() throws SQLException {
 		if (instance == null) {
-			instance = new ConnectionHelper();
+			instance = new DBConnection();
 		}
 		try {
 			return DriverManager.getConnection(instance.url);
@@ -34,9 +32,8 @@ public class ConnectionHelper
 			throw e;
 		}
 	}
-	
-	public static void close(Connection connection)
-	{
+
+	public static void close(Connection connection) {
 		try {
 			if (connection != null) {
 				connection.close();

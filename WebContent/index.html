@@ -1,94 +1,71 @@
-<!DOCTYPE html>
-<html lang="en">
-
+<!DOCTYPE HTML>
+<html>
 <head>
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="">
-  <meta name="author" content="">
+<title>Admin Page!</title>
 
-  <title>Pokedex!</title>
-
-  <!-- Bootstrap core CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
-
-  <!-- Custom styles for this template -->
-  <link href="css/heroic-features.css" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css" /> 
-
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script src= "https://code.jquery.com/jquery-3.4.1.min.js"></script>
-  <script src="js/main.js"></script>
-	
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <script src="js/admin.js"></script>
+
 </head>
 
 <body>
 
-   <!-- Page Content -->
-  <div class="container">
- 
-    <!-- Jumbotron Header -->
-    <header class="jumbotron my-4">
-      <h1 class="display-3">Welcome to Pokedex!</h1>
-      <p class="lead"> Pokémon are creatures of all shapes and sizes who live in the wild or alongside humans. 
-      				   For the most part, Pokémon do not speak except to utter their names. There are currently more than 700 creatures that inhabit the Pokémon 
-      				   universe.</p>
-    </header>
+<div class="header">
+	<input type="text" id="searchKey"/>
+	<button id="btnSearch">Search</button>
+	<button id="btnAdd">New Buddy</button>
+</div>
 
-    <!-- Page Features -->
-    <div class="row text-center">
 
-  <div class="navbar-dark">
-	<ul class="navbar-dark navbar-nav active" id="pokeList"></ul>
-	</div>
+<div class="leftArea">
+<ul id="pokeList"></ul>
+</div>
 
-  	 <div class="col-lg-3 col-md-6 mb-4">
-        <div class="card h-100">
-          <img class="card-img-top" id="img" alt="">
-          <div class="card-body">
-            <h4 class="card-title">Name</h4>
-            <input type="text" id="name" name="name" />
-            <h4 class="card-title"> Id </h4>  
-			<input id="Id" name="id" type="text" disabled />
-			<h4 class="card-title">Region</h4>
-			<input type="text" id="region" name="region"/>
-			<h4 class="card-title">Category</h4>
-			<input type="text" id="category" name="category"/>
-			<h4 class="card-title">Evolution</h4>
-			<input type="text" id="evolution" name="evolution"/>
-			<h4 class="card-title">Gender</h4>
-			<input type="text" id="gender" name="gender"/>
-			</div>
-            <h4 class="card-title">Notes</h4>
-		    <textarea id="description" name="description"></textarea> 
-            <div class="card-footer">
-            <a href="#" class="btn btn-primary">Edit</a>
-            <a href="#" class="btn btn-primary">Delete</a>
-            <a href="#" class="btn btn-primary">Add New Buddy</a>
-          </div>
-        </div>
-   </div>
+<form id="pokeForm">
+	
+<div class="mainArea">
 
-    </div>
-    <!-- /.row -->
+<label>Id:</label>
+<input id="Id" name="id" type="text" required>
 
-  </div>
-  <!-- /.container -->
+<label>Name:</label>
+<input type="text" id="name" name="name" required>
 
-  <!-- Footer -->
-  <footer class="py-5 bg-dark">
-    <div class="container">
-      <p class="m-0 text-center text-white">Copyright &copy; Fab! 2020</p>
-    </div>
-    <!-- /.container -->
-  </footer>
+<label>Category:</label>
+<input type="text" id="category" name="category"/>
 
-  <!-- Bootstrap core JavaScript -->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<label>Attack:</label>
+<input type="text" id="attack" name="attack"/>
+
+<label>Evolution:</label>
+<input type="text" id="evolution" name="evolution"/>
+
+<label>Region:</label>
+<input type="text" id="region" name="region"/>
+
+<label>Gender:</label>
+<input type="text" id="gender" name="gender"/>
+
+<button id="btnSave">Save</button>
+<button id="btnSaveNew">Add</button>
+<button id="btnDelete">Delete</button>
+
+</div>
+
+<div class="rightArea">
+
+<img id="img" style="width:200px;height:200px;">
+
+<label>Notes:</label>
+<textarea id="description" name="description"></textarea>
+</div>
+
+</form>
+
 
 </body>
-
 </html>
-

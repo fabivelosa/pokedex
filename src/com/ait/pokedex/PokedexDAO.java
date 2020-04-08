@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List; 
+import java.util.List;
 
 public class PokedexDAO {
 
@@ -15,7 +15,7 @@ public class PokedexDAO {
 		Connection c = null;
 		String sql = "SELECT * FROM Pokedex.Pokemon ORDER BY name";
 		try {
-			c = ConnectionHelper.getConnection();
+			c = DBConnection.getConnection();
 			Statement s = c.createStatement();
 			ResultSet rs = s.executeQuery(sql);
 			while (rs.next()) {
@@ -25,17 +25,17 @@ public class PokedexDAO {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		} finally {
-			ConnectionHelper.close(c);
+			DBConnection.close(c);
 		}
 		return list;
 	}
-	
+
 	public Pokedex findById(int id) {
 		String sql = "SELECT * FROM Pokedex.Pokemon where id = ?";
 		Pokedex poke = null;
 		Connection c = null;
 		try {
-			c = ConnectionHelper.getConnection();
+			c = DBConnection.getConnection();
 			PreparedStatement ps = c.prepareStatement(sql);
 			ps.setInt(1, id);
 			ResultSet rs = ps.executeQuery();
@@ -46,28 +46,28 @@ public class PokedexDAO {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		} finally {
-			ConnectionHelper.close(c);
+			DBConnection.close(c);
 		}
 		return poke;
 	}
-	
+
 	public List<Pokedex> findByName(String name) {
 		List<Pokedex> list = new ArrayList<Pokedex>();
 		Connection c = null;
 		String sql = "SELECT * FROM Pokedex.Pokemon where Upper(name) like ? " + "order by name";
 		try {
-			c = ConnectionHelper.getConnection();
+			c = DBConnection.getConnection();
 			PreparedStatement ps = c.prepareStatement(sql);
 			ps.setString(1, "%" + name.toUpperCase() + "%");
 			ResultSet rs = ps.executeQuery();
-			while (rs.next()) { 
+			while (rs.next()) {
 				list.add(processRow(rs));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		} finally {
-			ConnectionHelper.close(c);
+			DBConnection.close(c);
 		}
 		return list;
 	}
@@ -78,7 +78,7 @@ public class PokedexDAO {
 		String sql = "SELECT * FROM Pokedex.Pokemon where Upper(region) like ? " + " and Upper(category) like  ? "
 				+ " order by name";
 		try {
-			c = ConnectionHelper.getConnection();
+			c = DBConnection.getConnection();
 			PreparedStatement ps = c.prepareStatement(sql);
 			ps.setString(1, "%" + region.toUpperCase() + "%");
 			ps.setString(2, "%" + category.toUpperCase() + "%");
@@ -90,7 +90,7 @@ public class PokedexDAO {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		} finally {
-			ConnectionHelper.close(c);
+			DBConnection.close(c);
 		}
 		return list;
 	}
@@ -113,7 +113,7 @@ public class PokedexDAO {
 		Connection c = null;
 		String sql = null;
 		try {
-			c = ConnectionHelper.getConnection();
+			c = DBConnection.getConnection();
 			sql = "INSERT INTO Pokedex.Pokemon (id,name, attack, category, gender, region, evolution, photo, description) "
 					+ "VALUES (?,?,?,?,?,?,?,?,?);";
 			PreparedStatement ps = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -135,18 +135,18 @@ public class PokedexDAO {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		} finally {
-			ConnectionHelper.close(c);
+			DBConnection.close(c);
 		}
-		//System.out.println(sql + "id= " + poke.getId());
+		// System.out.println(sql + "id= " + poke.getId());
 		return poke;
 	}
 
 	public Pokedex update(Pokedex poke) {
 		Connection c = null;
 		try {
-			c = ConnectionHelper.getConnection();
-			PreparedStatement ps = c
-					.prepareStatement("UPDATE Pokedex.Pokemon set name =?, attack =?, category =?, evolution =?, region=?, photo=?, "
+			c = DBConnection.getConnection();
+			PreparedStatement ps = c.prepareStatement(
+					"UPDATE Pokedex.Pokemon set name =?, attack =?, category =?, evolution =?, region=?, photo=?, "
 							+ "gender=?, description=? WHERE id=?;");
 			ps.setString(1, poke.getName());
 			ps.setString(2, poke.getAttack());
@@ -162,7 +162,7 @@ public class PokedexDAO {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		} finally {
-			ConnectionHelper.close(c);
+			DBConnection.close(c);
 		}
 		return poke;
 	}
@@ -170,7 +170,7 @@ public class PokedexDAO {
 	public boolean remove(int id) {
 		Connection c = null;
 		try {
-			c = ConnectionHelper.getConnection();
+			c = DBConnection.getConnection();
 			PreparedStatement ps = c.prepareStatement("DELETE FROM Pokedex.Pokemon WHERE id=?;");
 			ps.setInt(1, id);
 			int count = ps.executeUpdate();
@@ -179,7 +179,7 @@ public class PokedexDAO {
 			e.printStackTrace();
 			throw new RuntimeException(e);
 		} finally {
-			ConnectionHelper.close(c);
+			DBConnection.close(c);
 		}
 	}
 }

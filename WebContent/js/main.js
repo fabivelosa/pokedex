@@ -1,298 +1,47 @@
+/**
+ * A00267345 - Fabiane Velosa *
+ */
 
 var rootURL = "http://localhost:8080/Pokedex/rest/pokedex";
-
-var currentPokemon;
-var newpoke;
-
 var dataJson;
 
+var user = "";
+var ADMIN ="admin";
+var CUSTOMER = "customer";
+var pt = null;
+var loginVar = localStorage.getItem('loginVar');
+
+
 $(function() {
-	$("#tabs").tabs({
-		activate : function(event, ui) {
-			console.log(ui.newTab.index());
-			
-			if(dataJson == null){
-				ui.newPanel.load(self.findAll(ui.newTab.index()));
-			}else{
-				if(ui.newTab.index()==1){
-					populateGrid(dataJson);
-				}else{
-					populateDataTable(dataJson);
-				}
-			}
-		}
-
-	});
-
+//	initLogin();
+	findAll(0);
+	initTabs();
+	initUpdatePokemon();
+	initDataGrid()
+	pt = $('#pokemon-item');
 });
 
-function findAll(id) {
-	$.ajax({
-		type : 'GET',
-		url : rootURL,
-		dataType : "json",
-		success : function(data) {
-			dataJson = data;
-			if (id == 2) {
-				populateDataTable(data);
-				
-			} else {
-				populateGrid(data);
-			}
-
+function initTabs(){
+	$("#tabs").tabs({
+		activate : function(event, ui) {
+			console.log('tab: '+ ui.newTab.index());
+				if (ui.newTab.index() == 1) {
+					if ($('.row .col-lg-3').length <= 1) {
+						renderGrid(dataJson);
+					}
+				} else {
+					renderDataTable(dataJson);
+					if (!$('#table_id-1').DataTable().data().any()) {
+						console.log("table_id-1");
+					}
+				}
 		}
-	});
-
+	});	
 }
 
-function populateGrid(data) {
-
-	$(data).each(function(i, pokemon) {
-
-		append(pokemon);
-	});
-}
-
-function append(pokemon) {
-
-	var pt = $('#pokemon-item').clone();
-	pt.find('.pokemon-name').text(pokemon.name);
-	pt.find('.pokemon-description').text(pokemon.description);
-	pt.find('.pokemon-category').text(pokemon.category);
-	pt.find('.pokemon-attack').text(pokemon.attack);
-	pt.attr('id', 'pokemon-id-' + pokemon.id)
-	pt.find('.pokemon-image').attr('src', pokemon.img);
-	pt.show();
-
-	$('#pokemon-row').append(pt);
-}
-
-function populateDataTable(data) {
-
-	$('#table_id-1')
-			.DataTable(
-					{
-						"paging" : true,
-						"searching" : true,
-						"retrieve" : true,
-						"processing" : true,
-						"data" : data,
-						"columns" : [ {
-							"data" : "name"
-						}, {
-							"data" : "gender"
-						}, {
-							"data" : "evolution"
-						}, {
-							"data" : "attack"
-						}, ],
-						"columnDefs" : [
-								{//name
-									visible : true,
-									targets : 0,
-									className : 'dt-center',
-									render : function(data, type, full,
-											meta) {
-										return data;
-									}
-								},
-								{//gender
-									visible : true,
-									targets : 1,
-									className : 'dt-center',
-									render : function(data, type, full,
-											meta) {
-										return data;
-									}
-								},
-								{//evolution
-									visible : true,
-									targets : 2,
-									className : 'dt-center',
-									render : function(data, type, full,
-											meta) {
-										return data;
-									}
-								},
-								{//attack
-									visible : true,
-									targets : 3,
-									className : 'dt-center',
-									render : function(data, type, full,
-											meta) {
-										return data;
-									}
-								},
-								{//action
-									visible : true,
-									targets : 4,
-									className : "dt-center",
-									render : function(data, type, full,
-											meta) {
-
-										return '<button id="editBtn" class="btn btn-info btn-flat edit" name="editBtn" type="button">Edit</button>'
-												+ '&nbsp;&nbsp;<button id="deleteBtn" class="btn btn-info btn-flat delete" name="deleteBtn" type="button" >Delete</button>';
-
-									}
-								} ],
-
-					});
-}
-	
-var search =function(searchKey) {
-	$('#pokeList').remove;
-	if (searchKey == '') 
-		
-		findAll();
-	else
-		findByName(searchKey);
-};
-
-var newBuddy=function () {
-	$('#btnDelete').hide();
-	currentPokemon = {};
-	renderDetails(currentPokemon); // Display empty form
-};
-
-var findAll = function() {
-	console.log('findAll');
-	$('#pokeList').remove
-	newpoke = 0;
-	$.ajax({
-		type: 'GET',
-		url: rootURL,
-		dataType: "json",
-		success: renderList
-	});
-}
-
-var findByName= function(searchKey) {
-	console.log('findByName: ' + searchKey);
-	newpoke = 0;
-	$.ajax({
-		type: 'GET',
-		url: rootURL + '/search/' + searchKey,
-		dataType: "json",
-		success: renderList 
-	});
-};
-
-var findById = function(id) {
-	console.log('findById: '+id);
-	newpoke = 0;
-	$.ajax({
-		type: 'GET',
-		url: rootURL + '/' +id,
-		dataType: "json",
-		success: function(data){
-			    $('#btnDelete').show();
-				console.log ('findbyId success: '+ data.name);
-				currentPokemon = data;
-				renderDetails(currentPokemon);
-		}
-	});
-}
-
-var addBuddy = function () {
-	console.log('addBuddy');
-	console.log(newpoke);
-	$.ajax({
-		type: 'POST',
-		contentType: 'application/json',
-		url: rootURL,
-		dataType: "json",
-		data: formToJSON(),
-		success: function(data, textStatus, jqXHR){
-			alert('Pokemon created successfully');
-			$('#btnDelete').show();
-			$('#pokemonId').val(data.id);
-                        findAll();
-		},
-		error: function(jqXHR, textStatus, errorThrown){
-			alert('addBuddy error: ' + textStatus);
-		}
-	});
-};
-
-var updateBuddy= function () {
-	console.log('updateBuddy');
-	$.ajax({
-		type: 'PUT',
-		contentType: 'application/json',
-		url: rootURL + '/' + $('#Id').val(),
-		dataType: "json",
-		data: formToJSON(),
-		success: function(data, textStatus, jqXHR){
-			alert('Pokemon updated successfully');
-                         findAll();
-		},
-		error: function(jqXHR, textStatus, errorThrown){
-			alert('updateBuddy error: ' + textStatus);
-		}
-	});
-};
-
-var deleteBuddy=function() {
-	console.log('deleteBuddy');
-	$.ajax({
-		type: 'DELETE',
-		url: rootURL + '/' + $('#Id').val(),
-		success: function(data, textStatus, jqXHR){
-			alert('Pokemon deleted successfully');
-                         findAll();
-		},
-		error: function(jqXHR, textStatus, errorThrown){
-			alert('deleteBuddy error');
-		}
-	});
-};
-
-
-//[{..}, {...},...] array of objects
-function renderList(data) {
-	list = data.pokedex;
-	$('#pokeList').empty();
-	$.each(data, function(id, pokemon) {
-		$('#pokeList').append(
-				'<li><a href="#" id="' + pokemon.id + '">' + pokemon.name + '</a></li>');
-	
-	});
-}
-
-function renderDetails(pokemon) {
-	$('#Id').val(pokemon.id);
-	$('#name').val(pokemon.name);
-	$('#region').val(pokemon.region);
-	$('#category').val(pokemon.category);
-	$('#evolution').val(pokemon.evolution);
-	$('#gender').val(pokemon.gender);
-	$('#img').attr('src', pokemon.img);
-	$('#description').val(pokemon.description);	
-}
-
-var formToJSON=function () {
-	var pokemonId = $('#Id').val();
-	console.log(currentPokemon.img);
-	return JSON.stringify({
-		"id": $('#Id').val(), 
-		"name": $('#name').val(), 
-		"region": $('#region').val(),
-		"category": $('#category').val(),
-		"evolution": $('#evolution').val(),
-		"gender": $('#gender').val(),
-		"img": currentPokemon.img,
-		"description": $('#description').val()
-		});
-};
-
-
-//When the DOM is ready.
-$(document).ready(function(){
-	// Nothing to delete in initial application state
-	$('#btnDelete').hide();
-
+function initDataGrid(){
 	// Register listeners
-	$('#btnSearch').click(function() {
+	$('#btn-search').click(function() {
 		search($('#searchKey').val());
 		return false;
 	});
@@ -305,43 +54,422 @@ $(document).ready(function(){
 			return false;
 	    }
 	});
-
-	$('#btnAdd').click(function() {
-	    newpoke =1;
-		newBuddy();
-		return false;
-	});
-
-	$('#btnSave').click(function() {
-		if (newpoke == 1)
-			addBuddy();
+	var search =function(searchKey) {
+		$('#pokemon-row').empty();
+		if (searchKey == '') 
+			findAll(0);
 		else
-			updateBuddy();
-		return false;
-	});
+			findByName(searchKey);
+	};	
 
-	$('#btnDelete').click(function() {
-		deleteBuddy();
-		return false;
-	});
-	
-	$(document).on("click", "#pokeList a", function() {findById(this.id);});
-	
-	// Replace broken images with generic 
-	$("img").error(function(){
-	  $(this).attr("src", "img/generic.jpg");	
+	var findByName= function(searchKey) {
+		console.log('findByName: ' + searchKey);
+		$.ajax({
+			type: 'GET',
+			url: rootURL + '/search/' + searchKey,
+			dataType: "json",
+			success: function(data){
+				renderGrid(data);
+				console.log('data by name'+data);
+			}
+		});
+		
+	};
+}
 
+function initLogin(){
+
+	function login(){
+		var usernameToCheck=$('#username').val();
+		var passwordToCheck=$('#password').val();
+		if (!usernameToCheck || !passwordToCheck){
+			$('#loginError').show();	
+		}else{
+			user = findByUsername(usernameToCheck);			
+			if(user != null){
+				console.log('user'+user);
+				var correctUsername = user.username;
+				var correctPassword = user.password;
+				
+				console.log('correctUsername'+correctUsername);
+				console.log('correctPassword'+correctPassword);
+				console.log('passwordToCheck'+passwordToCheck);
+
+				
+				if(passwordToCheck == correctPassword){
+					userTypeLogin(user.role);
+				}else{
+					$('#password').val('');
+					$('#loginError').slideDown().html('<span id="error">Invalid Password</span>');	
+					$('#btnLogout').hide();
+				}
+
+			}else{
+				console.log("user error");
+				clearUsernameAndPasswordField();
+				$('#loginError').show();
+				$('#btnLogout').hide();
+			}
+		}
+		return false;
+	}	
+
+
+var  findByUsername= function(username) {
+	var userData;
+	console.log('findByUsername: ' + username);
+	$.ajax({
+		type: 'GET',
+		url: rootURL + '/login/search/'+username+'/', 
+		
+		dataType: "json",
+		async: false,
+		success: function (data) {
+			$('#btnLogout').show();
+			userData = data
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+			console.log("User doesnt exist!")
+		}
 	});
-	//reset form
-	$('#pokemonId').val("");
-	$('#name').val("");
-	$('#region').val("");
-	$('#category').val("");
-	$('#evolution').val("");
-	$('#gender').val("");
-	$('#img').attr('src', "");
-	$('#description').val("");
-	findAll();
+	console.log('userData'+userData);
+	return userData;
+ };
+ 
+function clearUsernameAndPasswordField(){
+		$('#username').val('');
+		$('#password').val('');
+}
+
+function userTypeLogin(userRole){
+	console.log("userTypeLogin "+userRole)
+	if (userRole=="admin"){
+		user="admin"
+		loginVar = 1;
+		localStorage.setItem('loginVar', 1);
+		console.log("admin")
+		 window.location.reload();
+	}else if (userRole=="customer"){
+		user="customer";
+		loginVar = 2;
+		localStorage.setItem('loginVar', 2);
+		window.location.reload();
+	}
+}	
+
+if (loginVar == 1){//admin
+	$('#tabs-0').hide();
+	$('#tabs-2').show();
+	$('#tabs-1').hide();
+
+}else if (loginVar == 2 ){//user
+	$('#tabs-0').hide();
+	$('#tabs-2').hide();
+	$('#tabs-1').show();
+}
+else {
+	$('#btnLogin').show();
+	$('#users').hide();
+	$('#btnLogout').hide();
+}
+
+$('#btnGo').click(function () {
+	login();
+	return false;
 });
 
+$('#btnLogout').click(function () {
+	logout();
+	$('#btnLogout').hide();
 
+	return false;	// this cancels the default action of the browser
+});
+
+}
+
+function findAll(id) {
+	$.ajax({
+		type : 'GET',
+		url : rootURL,
+		dataType : "json",
+		success : function(data) {
+			dataJson = data;
+			if (id == 2) {
+				renderDataTable(data);
+			} else {
+				renderGrid(data);
+			}
+		}
+	});
+}
+
+function findById(id) {
+	$.ajax({
+		type : 'GET',
+		url : rootURL + '/' + id,
+		dataType : "json",
+		success : function(data) {
+			$('#pokeId').val(data.id);
+			$('#name').val(data.name);
+			$('#gender').val(data.gender);
+			$('#category').val(data.category);
+			$('#evolution').val(data.evolution);
+			$('#attack').val(data.attack);
+			$('#region').val(data.region);
+			$('#poke-img').val(data.img);
+		}
+	});
+}
+
+function renderGrid(data) {
+
+	$(data).each(function(i, pokemon) {
+		append(pokemon);
+	});
+}
+
+function append(pokemon) {
+
+	var ptLocal;
+	console.log('ptLocal');
+	console.log($('#pokemon-item').length);
+	if( $('#pokemon-item').length == 0 ){
+		ptLocal = pt.clone();
+	}else{
+		ptLocal = $('#pokemon-item').clone();
+	}
+
+	ptLocal.find('.pokemon-name').text(pokemon.name);
+	ptLocal.find('.pokemon-description').text(pokemon.description);
+	ptLocal.find('.pokemon-category').text(pokemon.category);
+	ptLocal.find('.pokemon-attack').text(pokemon.attack);
+	ptLocal.find('.pokemon-id').text(pokemon.id);
+	ptLocal.attr('id', 'pokemon-id-' + pokemon.id)
+	ptLocal.find('.pokemon-image').attr('src', pokemon.img);
+	console.log(pokemon.img);
+	
+	ptLocal.show();
+	
+	$('#pokemon-row').append(ptLocal);
+
+}
+
+//Replace broken images with generic 
+$('.pokemon-image').on('error', function(){
+    $('.pokemon-image').replaceWith("img/generic.jpg");
+  });
+
+function renderDataTable(data) {
+	console.log(dataJson);
+	$('#table_id-1')
+			.DataTable(
+					{
+						"paging" : true,
+						"searching" : true,
+						"retrieve" : true,
+						"processing" : true,
+						"data" : data,
+						"columns" : [ {
+							"data" : "id"
+						}, {
+							"data" : "name"
+						}, {
+							"data" : "category"
+						}, {
+							"data" : "gender"
+						}, {
+							"data" : "evolution"
+						}, {
+							"data" : "attack"
+						}, {
+							"data" : "region"
+						}, {
+							"data" : "id"
+						}, ],
+						"columnDefs" : [
+								{
+									visible : true,
+									targets : 0,
+									className : 'dt-center',
+									render : function(data, type, full, meta) {
+										return data;
+									}
+								},
+								{
+									visible : true,
+									targets : 1,
+									className : 'dt-center',
+									render : function(data, type, full, meta) {
+										return data;
+									}
+								},
+								{
+									visible : true,
+									targets : 2,
+									className : 'dt-center',
+									render : function(data, type, full, meta) {
+										return data;
+									}
+								},
+								{
+									visible : true,
+									targets : 3,
+									className : 'dt-center',
+									render : function(data, type, full, meta) {
+										return data;
+									}
+								},
+								{
+									visible : true,
+									targets : 4,
+									className : 'dt-center',
+									render : function(data, type, full, meta) {
+										return data;
+									}
+								},
+								{
+									visible : true,
+									targets : 5,
+									className : 'dt-center',
+									render : function(data, type, full, meta) {
+										return data;
+									}
+								},
+								{
+									visible : true,
+									targets : 6,
+									className : 'dt-center',
+									render : function(data, type, full, meta) {
+										return data;
+									}
+								},
+								{
+									visible : true,
+									targets : 7,
+									className : "dt-center",
+									render : function(data, type, full, meta) {
+										return '<a href="#" data-identity="'+ data + '" class="btn btn-info btn-flat delete" data-toggle="modal" data-target="#pokemon-update-modal">Edit</a>'
+											   +'<a href="#" data-identity="'+ data + '" class="btn btn-info btn-flat delete" data-toggle="modal" data-target="#pokemon-delete-modal">Delete</a>'; 
+									}
+								} ],
+
+					});
+}
+
+function initUpdatePokemon() {
+	var newpoke=false;
+    //MODAL UPDATE
+	$('#pokemon-update-modal').on('hidden.bs.modal', function() {
+		console.log('hide.bs.modal');
+		$('#pokeId').val("");
+		$('#name').val("");
+		$('#gender').val("");
+		$('#category').val("");
+		$('#evolution').val("");
+		$('#attack').val("");
+		$('#region').val("");
+		$('#poke-img').val("");
+	});
+
+	$('#pokemon-update-modal').on('show.bs.modal', function(event) {
+		console.log('show.bs.modal');
+		var actionLink = $(event.relatedTarget);
+		var pokeId = actionLink.data('identity');
+		if (pokeId>0) {
+		findById(pokeId);
+		newpoke = false;
+		$('#pokeId').attr('disabled','disabled');
+		}else{
+			newpoke = true;
+			$('#pokeId').removeAttr('disabled');
+		}	
+		console.log('pokeId :' + pokeId);
+		
+	});
+
+	var formToJSON = function() {
+		return JSON.stringify({
+			"id" : $('#pokeId').val(),
+			"name" : $('#name').val(),
+			"gender" : $('#gender').val(),
+			"category" : $('#category').val(),
+			"evolution" : $('#evolution').val(),
+			"attack" : $('#attack').val(),
+			"region" : $('#region').val(),
+			"img" : $('#poke-img').val()
+		});
+	};
+
+	$('#btn-save').on('click', function(e) {
+		if (newpoke){
+			$.ajax({
+				type : 'POST',
+				contentType : 'application/json',
+				url : rootURL ,
+				dataType : "json",
+				data : formToJSON(),
+				success : function(response) {
+					alert('Pokemon created successfully');
+					if ($.fn.dataTable.isDataTable('#table_id-1')) {
+						var table = $('#table_id-1').DataTable();
+						table.destroy();
+						table.clear();
+					}
+					findAll(2);
+					$('#pokemon-update-modal').modal("hide");
+				}
+			})	
+		}else{
+			var pokeId = $('#pokeId').val();
+			console.log('click' + pokeId);
+			console.log(formToJSON());
+			$.ajax({
+				type : 'PUT',
+				contentType : 'application/json',
+				url : rootURL + '/' + pokeId,
+				dataType : "json",
+				data : formToJSON(),
+				success : function(response) {
+					alert('Pokemon updated successfully');
+					if ($.fn.dataTable.isDataTable('#table_id-1')) {
+						var table = $('#table_id-1').DataTable();
+						table.destroy();
+						table.clear();
+					}
+					findAll(2);
+					$('#pokemon-update-modal').modal("hide");
+				}
+			})
+	     }
+	});
+	
+	//MODAL DELETE
+	$('#pokemon-delete-modal').on('hidden.bs.modal', function() {
+		$('#delpokeId').val("");
+		console.log('hide.bs.modal');
+	});
+
+	$('#pokemon-delete-modal').on('show.bs.modal', function(event) {
+		var actionLink = $(event.relatedTarget);
+		var pokeId = actionLink.data('identity');
+		$('#delpokeId').val(pokeId);
+		
+	});
+
+	$('#btn-delete').on('click', function(e) {	
+		var pokeId = $('#delpokeId').val();
+		$.ajax({
+			type : 'DELETE',
+			url : rootURL + '/' + pokeId,
+			success : function(response) {
+				if ($.fn.dataTable.isDataTable('#table_id-1')) {
+					var table = $('#table_id-1').DataTable();
+					table.destroy();
+					table.clear();
+				}
+				findAll(2);
+				$('#pokemon-delete-modal').modal("hide");
+			}
+		})
+	});
+}

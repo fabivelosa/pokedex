@@ -1,4 +1,4 @@
-var rootURL = "http://localhost:8080/Pokedex/rest/user";
+var rootURL = "http://localhost:8080/Pokedex/rest/login";
 var user = "";
 var ADMIN ="admin";
 var CUSTOMER = "customer";
@@ -8,46 +8,24 @@ var loginVar = localStorage.getItem('loginVar');
 
 $(document).ready(function () {
 
-	
 	if (loginVar == 1){//admin
-		
 		$('#login').hide();
 		$('#adminTab').show();
 		$('#customerTab').hide();
 
-		
-		
 	}else if (loginVar == 2 ){//user
-		
 		$('#login').hide();
 		$('#adminTab').hide();
 		$('#customerTab').show();
-		
-	}else if (loginVar == 0){
-		$('#btnLogin').show();
-		$('#users').hide();
-		$('#btnLogout').hide();
-		
 	}
-	else{
+	else {
 		$('#btnLogin').show();
 		$('#users').hide();
 		$('#btnLogout').hide();
 	}
 
 	
-	$('#btnLogin').click(function () {
-		login();
-	
-		return false;
-	});
-
-	$('#btnLogout').click(function () {
-		logout();
-		$('#btnLogout').hide();
-
-		return false;	// this cancels the default action of the browser
-	});
+	 
 });
 
 function logout(){
@@ -60,8 +38,8 @@ function logout(){
 
 function login(){
 	
-	var usernameToCheck=$('#inputUsername').val();
-	var passwordToCheck=$('#inputPassword').val();
+	var usernameToCheck=$('#isername').val();
+	var passwordToCheck=$('#Password').val();
 	if (!usernameToCheck || !passwordToCheck){
 		$('#loginError').slideDown().html('<span id="error">You must enter a username and password</span>');	
 	}else{
@@ -72,7 +50,7 @@ function login(){
 			if(passwordToCheck == correctPassword){
 				userTypeLogin(user.role);
 			}else{
-				$('#inputPassword').val('');
+				$('#assword').val('');
 				$('#loginError').slideDown().html('<span id="error">Invalid Password</span>');	
 				$('#btnLogout').hide();
 			}
@@ -85,14 +63,14 @@ function login(){
 		}
 	}
 	return false;
-};
+}
 
 var  findByUsername= function(username) {
 	var userData;
 	console.log('findByUsername: ' + username);
 	$.ajax({
 		type: 'GET',
-		url: rootURL + '/'+username+'/',
+		url: rootURL + 'search/'+username+'/', 
 		
 		dataType: "json",
 		async: false,
@@ -124,8 +102,8 @@ function userTypeLogin(userRole){
 };
 
 function clearUsernameAndPasswordField(){
-	$('#inputUsername').val('');
-	$('#inputPassword').val('');
+	$('#username').val('');
+	$('#password').val('');
 };
 
 function loadUserTemplate(userRole){
