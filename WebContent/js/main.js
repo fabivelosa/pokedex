@@ -97,12 +97,14 @@ function initLogin() {
 			user = "ADMIN"
 			loginVar = 1;	
 			//window.location.reload();// the same as the reload button on
-		
+			//window.location.href=$('#tabs-2');
+			$("#tabs").tabs( { active: 2 } );
+					
 		} else {
 			console.log("customer")
 			user = "CUSTOMER";
 			loginVar = 2;
-			//window.location.reload();// the same as the reload button on
+			$("#tabs").tabs( { active: 1 } );
 		}
 	}
 	
